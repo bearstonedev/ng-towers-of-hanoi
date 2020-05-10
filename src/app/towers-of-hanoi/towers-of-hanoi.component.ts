@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core'
-import { Observable } from 'rxjs'
+import { Component } from '@angular/core'
+import { map } from 'rxjs/operators'
 import { HanoiService } from '../core/hanoi.service'
 
 @Component({
@@ -7,26 +7,10 @@ import { HanoiService } from '../core/hanoi.service'
   templateUrl: './towers-of-hanoi.component.html',
   styleUrls: ['./towers-of-hanoi.component.scss']
 })
-export class TowersOfHanoiComponent implements OnInit {
-  sourceStack$: Observable<number[]>
-  auxStack$: Observable<number[]>
-  targetStack$: Observable<number[]>
-  moveCount$: Observable<number>
-
-  start(n: number): void {
-    // init n
-    const optimal = this.calculateOptimalMoveCount(n)
-    const formattedOptimal = optimal.toLocaleString()
-    if (optimal > 50000 && !confirm(this.getConfirmPrompt(formattedOptimal))) {
-      return
-    }
-    console.log(`Completing the Tower of Hanoi for ${n} disks, in the optimal ${formattedOptimal} moves.`)
-    const operation = this.hanoi.solve(n)
-    this.sourceStack$ = operation.source
-    this.auxStack$ = operation.aux
-    this.targetStack$ = operation.target
-    this.moveCount$ = operation.count
-  }
+export class TowersOfHanoiComponent {
+  problem$ = this.hanoi.problem$.pipe(
+    map(problemMap => [...problemMap.values()])
+  )
 
   private calculateOptimalMoveCount(n: number) {
     return Math.pow(2, n) - 1
@@ -38,10 +22,24 @@ export class TowersOfHanoiComponent implements OnInit {
 This may take a while to complete. Do you wish to continue?`
   }
 
-  constructor(private hanoi: HanoiService) { }
+  start(n: number) {
+    // init n
+    const optimal = this.calculateOptimalMoveCount(n)
+    const formattedOptimal = optimal.toLocaleString()
+    if (optimal > 50000 && !confirm(this.getConfirmPrompt(formattedOptimal))) {
+      return
+    }
 
-  ngOnInit(): void {
+    if (typeof Worker === 'undefined') {
+      const errMsg = 'Web workers are not available - unable to proceed.'
+      console.error(errMsg)
+      alert(errMsg)
+      return
+    }
 
+    console.log(`Completing the Tower of Hanoi for ${n} disks, in the optimal ${formattedOptimal} moves.`)
+    this.hanoi.solve(n)
   }
 
+  constructor(private hanoi: HanoiService) { }
 }

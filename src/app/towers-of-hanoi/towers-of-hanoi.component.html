@@ -1,13 +1,22 @@
 <div class="row">
-    <div class="col-3"></div>
-    <app-disc-prompt class="col-6" (discsRequested)="start($event)"></app-disc-prompt>
-    <div class="col-3"></div>
+  <div class="col-3"></div>
+  <app-disc-prompt class="col-6" (discsRequested)="start($event)"></app-disc-prompt>
+  <div class="col-3"></div>
 </div>
-<div class="row">
-    <app-tower class="col-12" [name]="'source'" [stack$]="sourceStack$"></app-tower>
-    <app-tower class="col-12" [name]="'auxiliary'" [stack$]="auxStack$"></app-tower>
-    <app-tower class="col-12" [name]="'target'" [stack$]="targetStack$"></app-tower>
-</div>
-<div class="row">
-    <app-move-counter class="col-12" [count$]="moveCount$"></app-move-counter>
+<div *ngFor="let problem of problem$ | async">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col h4 text-center">Solving for {{ problem.n }} discs</div>
+    <button class="btn btn-danger col-auto"
+      (click)="problem.cancel()">{{ problem.isDone ? 'Close' : 'Cancel' }}</button>
+    <div class="col-2"></div>
+  </div>
+  <div class="row">
+    <app-tower class="col-12" [name]="'source'" [stack$]="problem.sourceStack$"></app-tower>
+    <app-tower class="col-12" [name]="'auxiliary'" [stack$]="problem.auxStack$"></app-tower>
+    <app-tower class="col-12" [name]="'target'" [stack$]="problem.targetStack$"></app-tower>
+  </div>
+  <div class="row">
+    <app-move-counter class="col-12" [count$]="problem.moveCount$"></app-move-counter>
+  </div>
 </div>

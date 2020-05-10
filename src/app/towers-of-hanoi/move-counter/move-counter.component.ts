@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 import { Observable } from 'rxjs'
 
 @Component({
@@ -6,14 +6,9 @@ import { Observable } from 'rxjs'
   templateUrl: './move-counter.component.html',
   styleUrls: ['./move-counter.component.scss']
 })
-export class MoveCounterComponent implements OnInit {
-
+export class MoveCounterComponent {
   @Input()
   count$: Observable<number>
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }
