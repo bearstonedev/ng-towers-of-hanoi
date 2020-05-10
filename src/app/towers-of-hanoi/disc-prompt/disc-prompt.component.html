@@ -1,0 +1,10 @@
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text font-italic" id="discsLabel">n</span>
+    </div>
+    <input #n type="text" class="form-control text-center" placeholder="# of discs" aria-label="number of discs"
+        aria-describedby="discsLabel" (keyup.enter)="onDiscsRequested(n.value)">
+    <div class="input-group-append">
+        <button class="btn btn-success" type="button" (click)="onDiscsRequested(n.value)">Go</button>
+    </div>
+</div>
