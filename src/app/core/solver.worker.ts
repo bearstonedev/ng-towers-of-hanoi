@@ -19,6 +19,7 @@ function solve(numDiscs: number)/*: Observable<Snapshot>*/ {
   const C: number[] = []
   initializeSourceTower(numDiscs, A)
   let moveCount = 0
+  let isSleeping = true
 
   postMessage(new Snapshot({
     id: moveCount,
@@ -38,14 +39,17 @@ function solve(numDiscs: number)/*: Observable<Snapshot>*/ {
       target.push(source.pop()!)
       postMessage(new Snapshot({
         id: ++moveCount,
-        source,
-        auxiliary,
-        target,
+        source: source.reverse(),
+        auxiliary: auxiliary.reverse(),
+        target: target.reverse(),
       }))
+      while (isSleeping) { } // sleep until woken up
+      isSleeping = true
       move(n - 1, auxiliary, target, source)
     }
   }
 
+  setInterval(() => isSleeping = false, 500)
   move(numDiscs, A, C, B)
   postMessage('done')
 }

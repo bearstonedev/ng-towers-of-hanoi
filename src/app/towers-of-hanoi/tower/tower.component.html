@@ -1,6 +1,9 @@
 <div class="h2 text-center">
-    {{ name }}
+  {{ name }}
 </div>
-<div class="text-center">
-    {{ stack$ | async }}
+
+<div [style.height]="stackHeightStyle">
+  <div *ngFor="let discWidth of stack$ | async" class="text-center hanoi-disc" [style.line-height]="lineHeightStyle">
+    {{ '\u25c8'.repeat(discWidth) }}
+  </div>
 </div>

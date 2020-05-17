@@ -12,11 +12,11 @@
     <div class="col-2"></div>
   </div>
   <div class="row">
-    <app-tower class="col-12" [name]="'source'" [stack$]="problem.sourceStack$"></app-tower>
-    <app-tower class="col-12" [name]="'auxiliary'" [stack$]="problem.auxStack$"></app-tower>
-    <app-tower class="col-12" [name]="'target'" [stack$]="problem.targetStack$"></app-tower>
-  </div>
-  <div class="row">
     <app-move-counter class="col-12" [count$]="problem.moveCount$"></app-move-counter>
+  </div>
+  <div class="row stack-container">
+    <app-tower class="col" [size]="problem.n" [name]="'source'" [stack$]="problem.sourceStack$"></app-tower>
+    <app-tower class="col" [size]="problem.n" [name]="'auxiliary'" [stack$]="problem.auxStack$"></app-tower>
+    <app-tower class="col" [size]="problem.n" [name]="'target'" [stack$]="problem.targetStack$"></app-tower>
   </div>
 </div>
