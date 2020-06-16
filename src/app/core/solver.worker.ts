@@ -6,50 +6,53 @@ addEventListener('message', ({ data }) => {
   solve(data)
 })
 
-function initializeSourceTower(n: number, source: number[]): void {
-  if (n > 0) {
-    source.push(n)
-    initializeSourceTower(n - 1, source)
+function initializeTowers(n: number): [number[], number[], number[]] {
+
+  const source: number[] = []
+  const auxiliary: number[] = []
+  const target: number[] = []
+
+  const initializeSourceTower = () => {
+    if (n > 0) {
+      source.unshift(n--)
+      initializeSourceTower()
+    }
   }
+
+  initializeSourceTower()
+  return [source, auxiliary, target]
 }
 
-function solve(numDiscs: number)/*: Observable<Snapshot>*/ {
-  const A: number[] = []
-  const B: number[] = []
-  const C: number[] = []
-  initializeSourceTower(numDiscs, A)
+function solve(numDiscs: number) {
+  const [source, auxiliary, target] = initializeTowers(numDiscs)
   let moveCount = 0
-  let isSleeping = true
 
   postMessage(new Snapshot({
     id: moveCount,
-    source: A,
-    auxiliary: B,
-    target: C,
+    source,
+    auxiliary,
+    target,
   }))
 
   const move = (
     n: number,
-    source: number[],
-    target: number[],
-    auxiliary: number[]
+    A: number[],
+    C: number[],
+    B: number[]
   ): void => {
     if (n > 0) {
-      move(n - 1, source, auxiliary, target)
-      target.push(source.pop()!)
+      move(n - 1, A, B, C)
+      C.unshift(A.shift()!)
       postMessage(new Snapshot({
         id: ++moveCount,
-        source: source.reverse(),
-        auxiliary: auxiliary.reverse(),
-        target: target.reverse(),
+        source,
+        auxiliary,
+        target
       }))
-      while (isSleeping) { } // sleep until woken up
-      isSleeping = true
-      move(n - 1, auxiliary, target, source)
+      move(n - 1, B, C, A)
     }
   }
 
-  setInterval(() => isSleeping = false, 500)
-  move(numDiscs, A, C, B)
+  move(numDiscs, source, target, auxiliary)
   postMessage('done')
 }
